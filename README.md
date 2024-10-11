@@ -127,9 +127,9 @@ versions, i.e. execution environment containers.
     instance_groups: ''
 ```
 
-# Scenarios
+## Scenarios
 
-## Launch a Job Template
+### Launch a Job Template
 
 ```yaml
 steps:
