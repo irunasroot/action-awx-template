@@ -1,235 +1,152 @@
 # Create a GitHub Action Using TypeScript
 
-[![GitHub Super-Linter](https://github.com/actions/typescript-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/actions/typescript-action/actions/workflows/ci.yml/badge.svg)
-[![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
-[![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
+[![GitHub Super-Linter](https://github.com/irunasroot/action-awx-template/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
+![CI](https://github.com/irunasroot/action-awx-template/actions/workflows/ci.yml/badge.svg)
+[![Check dist/](https://github.com/irunasroot/action-awx-template/actions/workflows/check-dist.yml/badge.svg)](https://github.com/irunasroot/action-awx-template/actions/workflows/check-dist.yml)
+[![CodeQL](https://github.com/irunasroot/action-awx-template/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/irunasroot/action-awx-template/actions/workflows/codeql-analysis.yml)
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
-Use this template to bootstrap the creation of a TypeScript action. :rocket:
+Action for launching an AWX/AAP Job Template or Workflow Job template. This
+action is designed to engage fully with the AWX API for validation and sumitting
+the proper variables.
 
-This template includes compilation support, tests, a validation workflow,
-publishing, and versioning guidance.
+Works with AWX v18 or above, and AAP v2 or above. This _should_ work with older
+versions of AWX but not guaranteed as some variables are different in order
+versions, i.e. execution environment containers.
 
-If you are new, there's also a simpler introduction in the
-[Hello world JavaScript action repository](https://github.com/actions/hello-world-javascript-action).
+# Usage
 
-## Create Your Own Action
+```yaml
+- uses: irunasroot/action-awx-template@v1
+  with:
+    # The URL of AWX/AAP.
+    # If using an insecure SSL certificate be sure to set  controller_verify_certificate to false
+    # Variable Type: global
+    controller_url: ''
 
-To create your own action, you can use this repository as a template! Just
-follow the below instructions:
+    # The username to log into the controller. One of username/password or token needs to be provided.
+    # Variable Type: global
+    controller_username: ''
 
-1. Click the **Use this template** button at the top of the repository
-1. Select **Create a new repository**
-1. Select an owner and name for your new repository
-1. Click **Create repository**
-1. Clone your new repository
+    # The password to log into the controller. One of username/password or token needs to be provided.
+    # Variable Type: global
+    controller_password: ''
 
-> [!IMPORTANT]
->
-> Make sure to remove or update the [`CODEOWNERS`](./CODEOWNERS) file! For
-> details on how to use this file, see
-> [About code owners](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners).
+    # The token to authenticate to the controller. One of username/password or token needs to be provided.
+    # Variable Type: global
+    controller_token: ''
 
-## Initial Setup
+    # The timeout in milliseconds to wait for a call to the controller before erroring out.
+    # Note this is not a job execution timeout, but rather the timeout of the actual API calls to the controller
+    # Defaults to 1000
+    # Variable Type: global
+    controller_timeout: ''
 
-After you've cloned the repository to your local machine or codespace, you'll
-need to perform some initial setup steps before you can develop your action.
+    # Verify if the controller's certificate is valid.
+    # Defaults to true
+    # Variable Type: global
+    controller_verify_certificate: ''
 
-> [!NOTE]
->
-> You'll need to have a reasonably modern version of
-> [Node.js](https://nodejs.org) handy (20.x or later should work!). If you are
-> using a version manager like [`nodenv`](https://github.com/nodenv/nodenv) or
-> [`nvm`](https://github.com/nvm-sh/nvm), this template has a `.node-version`
-> file at the root of the repository that will be used to automatically switch
-> to the correct version when you `cd` into the repository. Additionally, this
-> `.node-version` file is used by GitHub Actions in any `actions/setup-node`
-> actions.
+    # The job template id to execute. This is mutually exclusive with workflow_job_template_id
+    # One of job_template_id or workflow_job_template_id has to be defined in order for the workflow to exeucte
+    # Variable Type: Job Template
+    job_template_id: ''
 
-1. :hammer_and_wrench: Install the dependencies
+    # The job template id to execute. This is mutually exclusive with workflow_job_template_id
+    # One of job_template_id or workflow_job_template_id has to be defined in order for the workflow to exeucte
+    # Variable Type: Workflow Job Template
+    workflow_job_template_id: ''
 
-   ```bash
-   npm install
-   ```
+    # Pass extra command line variables to the playbook. This is the equivalent of using --extra-vars. The extra_vars variable is evaulated using JSON.parse so while its a string it needs to be a strifiy'd version of a JSON object.
+    # Variable Type: Job Template, Workflow Job Template
+    extra_vars: ''
 
-1. :building_construction: Package the TypeScript for distribution
+    # Select the inventory containing the hosts you want this job to manage.
+    # Variable Type: Job Template, Workflow Job Template
+    inventory: ''
 
-   ```bash
-   npm run bundle
-   ```
+    # Branch to checkout. In addition to branches, you can input tags, commit
+    # Variable Type: Job Template, Workflow Job Template
+    scm_branch: ''
 
-1. :white_check_mark: Run the tests
+    # Provide a host pattern to further constrain the list of hosts that will be managed or affected by the playbook.
+    # Variable Type: Job Template, Workflow Job Template
+    limit: ''
 
-   ```bash
-   $ npm test
+    # Tags are useful when you have a large playbook, and you want to run a specific part of a play or task. Use commas to separate multiple tags.
+    # Variable Type: Job Template, Workflow Job Template
+    job_tags: ''
 
-   PASS  ./index.test.js
-     ✓ throws invalid number (3ms)
-     ✓ wait 500 ms (504ms)
-     ✓ test runs (95ms)
+    # Skip tags are useful when you have a large playbook, and you want to skip specific parts of a play or task. Use commas to separate multiple tags.
+    # Variable Type: Job Template, Workflow Job Template
+    skip_tags: ''
 
-   ...
-   ```
+    # For job templates, select run to execute the playbook. Select check to only check playbook syntax, test environment setup, and report problems without executing the playbook. Can only be one of 'run', or 'check'
+    # Defaults to 'run'
+    # Variable Type: Job Template
+    job_type: ''
 
-## Update the Action Metadata
+    # Control the level of output ansible will produce as the playbook executes. Can only be one of 0-5.
+    # Variable Type: Job Template
+    verbosity: ''
 
-The [`action.yml`](action.yml) file defines metadata about your action, such as
-input(s) and output(s). For details about this file, see
-[Metadata syntax for GitHub Actions](https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions).
+    # If enabled, show the changes made by Ansible tasks, where supported.
+    # Variable Type: Job Template
+    diff_mode: ''
 
-When you copy this repository, update `action.yml` with the name, description,
-inputs, and outputs for your action.
+    # Select credentials for accessing the nodes this job will be ran against. Specify as a list of ID's seperated by commas.
+    # Variable Type: Job Template
+    credentials: ''
 
-## Update the Action Code
+    # Credentials Passwords. The credential_passwords variable is evaulated using JSON.parse so while its a string it needs to be a strifiy'd version of a JSON object.
+    # Variable Type: Job Template
+    credential_passwords: ''
 
-The [`src/`](./src/) directory is the heart of your action! This contains the
-source code that will be run when your action is invoked. You can replace the
-contents of this directory with your own code.
+    # The container image to be used for execution. Specify as the ID of the EE.
+    # Variable Type: Job Template
+    execution_environment: ''
 
-There are a few things to keep in mind when writing your action code:
+    # Optional labels that describe this job template, such as 'dev' or 'test'. Specify as a list of ID's seperated by commas.
+    # Variable Type: Job Template
+    labels: ''
 
-- Most GitHub Actions toolkit and CI/CD operations are processed asynchronously.
-  In `main.ts`, you will see that the action is run in an `async` function.
+    # The number of parallel or simultaneous processes to use while executing the playbook.
+    # Variable Type: Job Template
+    forks: ''
 
-  ```javascript
-  import * as core from '@actions/core'
-  //...
+    # Divide the work done by this job template into the specified number of job slices, each running the same tasks against a portion of the inventory.
+    # Variable Type: Job Template
+    job_slice_count: ''
 
-  async function run() {
-    try {
-      //...
-    } catch (error) {
-      core.setFailed(error.message)
-    }
-  }
-  ```
+    # The amount of time (in seconds) to run before the job is canceled.
+    # Variable Type: Job Template
+    timeout: ''
 
-  For more information about the GitHub Actions toolkit, see the
-  [documentation](https://github.com/actions/toolkit/blob/master/README.md).
+    # Select the Instance Groups for this Job Template to run on. Specify as a list of ID's seperated by commas.
+    # Variable Type: Job Template
+    instance_groups: ''
+```
 
-So, what are you waiting for? Go ahead and start customizing your action!
+# Scenarios
 
-1. Create a new branch
-
-   ```bash
-   git checkout -b releases/v1
-   ```
-
-1. Replace the contents of `src/` with your action code
-1. Add tests to `__tests__/` for your source code
-1. Format, test, and build the action
-
-   ```bash
-   npm run all
-   ```
-
-   > This step is important! It will run [`ncc`](https://github.com/vercel/ncc)
-   > to build the final JavaScript action code with all dependencies included.
-   > If you do not run this step, your action will not work correctly when it is
-   > used in a workflow. This step also includes the `--license` option for
-   > `ncc`, which will create a license file for all of the production node
-   > modules used in your project.
-
-1. Commit your changes
-
-   ```bash
-   git add .
-   git commit -m "My first action is ready!"
-   ```
-
-1. Push them to your repository
-
-   ```bash
-   git push -u origin releases/v1
-   ```
-
-1. Create a pull request and get feedback on your action
-1. Merge the pull request into the `main` branch
-
-Your action is now published! :rocket:
-
-For information about versioning your action, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-## Validate the Action
-
-You can now validate the action by referencing it in a workflow file. For
-example, [`ci.yml`](./.github/workflows/ci.yml) demonstrates how to reference an
-action in the same repository.
+## Launch a Job Template
 
 ```yaml
 steps:
   - name: Checkout
-    id: checkout
     uses: actions/checkout@v4
-
-  - name: Test Local Action
-    id: test-action
-    uses: ./
     with:
-      milliseconds: 1000
+      ref: main
 
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
-```
-
-For example workflow runs, check out the
-[Actions tab](https://github.com/actions/typescript-action/actions)! :rocket:
-
-## Usage
-
-After testing, you can create version tag(s) that developers can use to
-reference different stable versions of your action. For more information, see
-[Versioning](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-in the GitHub Actions toolkit.
-
-To include the action in a workflow in another repository, you can use the
-`uses` syntax with the `@` symbol to reference a specific branch, tag, or commit
-hash.
-
-```yaml
-steps:
-  - name: Checkout
-    id: checkout
-    uses: actions/checkout@v4
-
-  - name: Test Local Action
-    id: test-action
-    uses: actions/typescript-action@v1 # Commit with the `v1` tag
+  - name: Launch Super Template 10
+    uses: irunasroot/action-awx-template@v1
     with:
-      milliseconds: 1000
-
-  - name: Print Output
-    id: output
-    run: echo "${{ steps.test-action.outputs.time }}"
+      controller_url: https://awx.irunasroot.com
+      controller_username: ${{ secrets.AWX_USERNAME }}
+      controller_password: ${{ secrets.AWX_PASSWORD }}
+      job_template_id: 10
+      extra_vars: |
+      {
+        "my_super_var": "my_super_value"
+      }
 ```
-
-## Publishing a New Release
-
-This project includes a helper script, [`script/release`](./script/release)
-designed to streamline the process of tagging and pushing new releases for
-GitHub Actions.
-
-GitHub Actions allows users to select a specific version of the action to use,
-based on release tags. This script simplifies this process by performing the
-following steps:
-
-1. **Retrieving the latest release tag:** The script starts by fetching the most
-   recent SemVer release tag of the current branch, by looking at the local data
-   available in your repository.
-1. **Prompting for a new release tag:** The user is then prompted to enter a new
-   release tag. To assist with this, the script displays the tag retrieved in
-   the previous step, and validates the format of the inputted tag (vX.X.X). The
-   user is also reminded to update the version field in package.json.
-1. **Tagging the new release:** The script then tags a new release and syncs the
-   separate major tag (e.g. v1, v2) with the new release tag (e.g. v1.0.0,
-   v2.1.2). When the user is creating a new major release, the script
-   auto-detects this and creates a `releases/v#` branch for the previous major
-   version.
-1. **Pushing changes to remote:** Finally, the script pushes the necessary
-   commits, tags and branches to the remote repository. From here, you will need
-   to create a new release in GitHub so users can easily reference the new tags
-   in their workflows.
