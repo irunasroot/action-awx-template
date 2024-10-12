@@ -175,7 +175,9 @@ class ControllerApi {
     payload: any
   ): Promise<any> {
     // endpoint: `/api/v2/${template_type}/${template_id}/launch`
-    core.debug(`Launching ${template_type}`)
+    core.debug(
+      `Launching ${template_type} with payload ${JSON.stringify(payload)}`
+    )
     core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch`)
     return this.client
       .post(`/api/v2/${template_type}/${template_id}/launch`, payload)

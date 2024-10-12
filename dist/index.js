@@ -29482,7 +29482,7 @@ class ControllerApi {
     }
     async _launchJobTemplate(template_id, template_type, payload) {
         // endpoint: `/api/v2/${template_type}/${template_id}/launch`
-        core.debug(`Launching ${template_type}`);
+        core.debug(`Launching ${template_type} with payload ${JSON.stringify(payload)}`);
         core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch`);
         return this.client
             .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
@@ -29675,7 +29675,7 @@ class JobTemplate extends api_1.ControllerApi {
     }
     async run() {
         this.validateLaunchRequirements(await this.getJobTemplateLaunchRequirements(this.template_id));
-        const response = await this.launchJobTemplate(this.template_id, {
+        const payload = {
             extra_vars: this.extra_vars,
             inventory: this.inventory,
             scm_branch: this.scm_branch,
@@ -29693,7 +29693,9 @@ class JobTemplate extends api_1.ControllerApi {
             job_slice_count: this.job_slice_count,
             timeout: this.timeout,
             instance_groups: this.instance_groups
-        });
+        };
+        Object.keys(payload).forEach(k => payload[k] == null && delete payload[k]);
+        const response = await this.launchJobTemplate(this.template_id, payload);
         const jobId = response;
         let jobStatus = await this.getJobStatus(jobId);
         core.info(`Job started on: ${jobStatus.started}`);

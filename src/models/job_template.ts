@@ -201,7 +201,7 @@ class JobTemplate extends ControllerApi {
       await this.getJobTemplateLaunchRequirements(this.template_id)
     )
 
-    const response = await this.launchJobTemplate(this.template_id, {
+    const payload: any = {
       extra_vars: this.extra_vars,
       inventory: this.inventory,
       scm_branch: this.scm_branch,
@@ -219,7 +219,11 @@ class JobTemplate extends ControllerApi {
       job_slice_count: this.job_slice_count,
       timeout: this.timeout,
       instance_groups: this.instance_groups
-    })
+    }
+
+    Object.keys(payload).forEach(k => payload[k] == null && delete payload[k])
+
+    const response = await this.launchJobTemplate(this.template_id, payload)
 
     const jobId: number = response
     let jobStatus: any = await this.getJobStatus(jobId)
