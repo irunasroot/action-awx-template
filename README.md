@@ -14,7 +14,7 @@ Works with AWX v18 or above, and AAP v2 or above. This _should_ work with older
 versions of AWX but not guaranteed as some variables are different in order
 versions, i.e. execution environment containers.
 
-# Usage
+## Usage
 
 ```yaml
 - uses: irunasroot/action-awx-template@v1
