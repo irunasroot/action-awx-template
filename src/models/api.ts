@@ -80,11 +80,11 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${template_type}/${template_id}/launch`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response}`)
+        core.debug(`Response Sucessful: ${response.data}`)
         return response.data
       })
       .catch((error: any) => {
-        core.debug(`Response Failed: ${error}`)
+        core.debug(`Response Failed: ${error.message}`)
         throw new Error(
           `Error trying to get job launch requirements: ${error.message}.`
         )
@@ -110,7 +110,7 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${job_type}/${job_id}/`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response}`)
+        core.debug(`Response Sucessful: ${response.data}`)
         // Status values: running, successful, failed
         return {
           started: response.data.started,
@@ -120,7 +120,7 @@ class ControllerApi {
         }
       })
       .catch((error: any) => {
-        core.debug(`Response Failed: ${error}`)
+        core.debug(`Response Failed: ${error.message}`)
         throw new Error(`Error trying to get job status: ${error.message}.`)
       })
   }
@@ -144,11 +144,11 @@ class ControllerApi {
         }
       })
       .then(response => {
-        core.debug(`Response Sucessful: ${response}`)
+        core.debug(`Response Sucessful: ${response.data}`)
         return response.data
       })
       .catch(error => {
-        core.debug(`Response Failed: ${error}`)
+        core.debug(`Response Failed: ${error.message}`)
         throw new Error(`Error trying to get job output: ${error.message}.`)
       })
   }
@@ -160,11 +160,11 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response}`)
+        core.debug(`Response Sucessful: ${response.data}`)
         return response.data.results
       })
       .catch(error => {
-        core.debug(`Response Failed: ${error}`)
+        core.debug(`Response Failed: ${error.message}`)
         throw new Error(`Error trying to get job status: ${error.message}.`)
       })
   }
@@ -180,11 +180,11 @@ class ControllerApi {
     return this.client
       .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
       .then(response => {
-        core.debug(`Response Sucessful: ${response}`)
+        core.debug(`Response Sucessful: ${response.data}`)
         return response.data.id
       })
       .catch(error => {
-        core.debug(`Response Failed: ${error}`)
+        core.debug(`Response Failed: ${error.message}`)
         throw new Error(
           `Error trying to launch the job template: ${error.message}.`
         )
