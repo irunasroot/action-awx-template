@@ -75,6 +75,7 @@ class ControllerApi {
     template_type: string
   ): Promise<any> {
     // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+    core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch`)
 
     return this.client
       .get(`/api/v2/${template_type}/${template_id}/launch`)
@@ -89,17 +90,21 @@ class ControllerApi {
   }
 
   async getJobTemplateLaunchRequirements(template_id: number): Promise<any> {
+    core.debug('Getting Job Template launch requirements')
     return this._getLaunchRequirements(template_id, TEMPLATE_TYPE_JOBS)
   }
 
   async getWorkflowJobTemplateLaunchRequirements(
     template_id: number
   ): Promise<any> {
+    core.debug('Getting Workflow Job Template launch requirements')
     return this._getLaunchRequirements(template_id, TEMPLATE_TYPE_WORKFLOW_JOBS)
   }
 
   async _getRunningJobStatus(job_id: number, job_type: string): Promise<any> {
     // endpoint: `/api/v2/${job_type}/${job_id}/`
+    core.debug(`Getting ${job_type} status`)
+    core.debug(`API Endpoint: /api/v2/${job_type}/${job_id}/`)
     return this.client
       .get(`/api/v2/${job_type}/${job_id}/`)
       .then(response => {
@@ -126,6 +131,8 @@ class ControllerApi {
 
   async getJobOutput(job_id: number, format = 'ansi'): Promise<any> {
     // endpoint: `/api/v2/jobs/${job_id}/stdout/`
+    core.debug('Getting Job Template output')
+    core.debug(`API Endpoint: /api/v2/jobs/${job_id}/stdout/`)
     return this.client
       .get(`/api/v2/jobs/${job_id}/stdout/`, {
         params: {
@@ -142,6 +149,8 @@ class ControllerApi {
 
   async getWorkflowNodes(job_id: number): Promise<any> {
     // endpoint: `/api/v2/workflow_jobs/${job_id}/workflow_nodes/`
+    core.debug('Getting Workflow Job nodes')
+    core.debug(`API Endpoint: /api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
     return this.client
       .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
       .then(response => {
@@ -158,6 +167,8 @@ class ControllerApi {
     payload: any
   ): Promise<any> {
     // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+    core.debug(`Launching ${template_type}`)
+    core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch`)
     return this.client
       .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
       .then(response => {
