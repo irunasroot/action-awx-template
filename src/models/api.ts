@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import axios from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import https from 'https'
 import http from 'http'
 
@@ -24,6 +24,23 @@ class ControllerApi {
     core.debug(
       `Defaults for ControllerApi. URL: ${controller_url}; Username: ${controller_username ? '***' : ''}; Password: ${controller_password ? '***' : ''}; Token: ${controller_token ? '***' : ''}; Timeout: ${controller_timeout}; Verify Cert: ${controller_verify_certificate}`
     )
+
+    if (process.env.ACTIONS_STEP_DEBUG === 'true') {
+      // Enable some addtional debugging if action debugging is turned on.
+      // Should only be used in testing environments
+
+      const onFulfilled = (response: AxiosResponse): AxiosResponse => {
+        core.debug(`Response Sucessful: ${response}`)
+        return response
+      }
+
+      const onRejected = (error: AxiosError): AxiosError => {
+        core.debug(`Response Failed: ${error}`)
+        return error
+      }
+
+      axios.interceptors.response.use(onFulfilled, onRejected)
+    }
 
     if (!controller_url) {
       throw new Error('The controller_url was not provided')

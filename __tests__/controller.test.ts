@@ -37,6 +37,17 @@ const mockCore = core as jest.Mocked<typeof core>
 mockAxios.create.mockImplementation(() => axios)
 mockCore.debug.mockImplementation()
 
+const OLDENV = process.env
+
+beforeEach(() => {
+  jest.resetModules()
+  process.env = { ...OLDENV }
+})
+
+afterAll(() => {
+  process.env = OLDENV
+})
+
 describe('Testing Controller Initiliaztions', () => {
   test('Controller invalid URL protocol', () => {
     expect(() => {
@@ -147,6 +158,22 @@ describe('Testing Controller Initiliaztions', () => {
     // Not sure how to test headers since mocking seems to reset any of the headers
     // Leaving here so coverage is 100
     expect(controller).toBe(controller)
+  })
+
+  test('Controller specifiy action debugging', () => {
+    process.env.ACTIONS_STEP_DEBUG = 'true'
+
+    const controller = new ControllerApi(
+      CONTROLLER_INSTANCE.controller_url_http,
+      CONTROLLER_INSTANCE.controller_username,
+      CONTROLLER_INSTANCE.controller_password,
+      CONTROLLER_INSTANCE.controller_token,
+      CONTROLLER_INSTANCE.controller_timeout,
+      CONTROLLER_INSTANCE.controller_verify_certificate
+    )
+
+    expect(controller).toBe(controller)
+    // TODO: How to test onFulfilled and onRejected functions
   })
 })
 
