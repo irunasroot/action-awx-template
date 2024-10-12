@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import axios, { AxiosError, AxiosResponse } from 'axios'
+import axios from 'axios'
 import https from 'https'
 import http from 'http'
 
@@ -24,23 +24,6 @@ class ControllerApi {
     core.debug(
       `Defaults for ControllerApi. URL: ${controller_url}; Username: ${controller_username ? '***' : ''}; Password: ${controller_password ? '***' : ''}; Token: ${controller_token ? '***' : ''}; Timeout: ${controller_timeout}; Verify Cert: ${controller_verify_certificate}`
     )
-
-    if (process.env.CONTROLLER_DEBUG === 'true') {
-      // Enable some addtional debugging if action debugging is turned on.
-      // Should only be used in testing environments
-
-      const onFulfilled = (response: AxiosResponse): AxiosResponse => {
-        core.debug(`Response Sucessful: ${response}`)
-        return response
-      }
-
-      const onRejected = (error: AxiosError): AxiosError => {
-        core.debug(`Response Failed: ${error}`)
-        return error
-      }
-
-      axios.interceptors.response.use(onFulfilled, onRejected)
-    }
 
     if (!controller_url) {
       throw new Error('The controller_url was not provided')
@@ -97,9 +80,11 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${template_type}/${template_id}/launch`)
       .then(response => {
+        core.debug(`Response Sucessful: ${response}`)
         return response.data
       })
       .catch((error: any) => {
+        core.debug(`Response Failed: ${error}`)
         throw new Error(
           `Error trying to get job launch requirements: ${error.message}.`
         )
@@ -125,6 +110,7 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${job_type}/${job_id}/`)
       .then(response => {
+        core.debug(`Response Sucessful: ${response}`)
         // Status values: running, successful, failed
         return {
           started: response.data.started,
@@ -134,6 +120,7 @@ class ControllerApi {
         }
       })
       .catch((error: any) => {
+        core.debug(`Response Failed: ${error}`)
         throw new Error(`Error trying to get job status: ${error.message}.`)
       })
   }
@@ -157,9 +144,11 @@ class ControllerApi {
         }
       })
       .then(response => {
+        core.debug(`Response Sucessful: ${response}`)
         return response.data
       })
       .catch(error => {
+        core.debug(`Response Failed: ${error}`)
         throw new Error(`Error trying to get job output: ${error.message}.`)
       })
   }
@@ -171,9 +160,11 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
       .then(response => {
+        core.debug(`Response Sucessful: ${response}`)
         return response.data.results
       })
       .catch(error => {
+        core.debug(`Response Failed: ${error}`)
         throw new Error(`Error trying to get job status: ${error.message}.`)
       })
   }
@@ -189,9 +180,11 @@ class ControllerApi {
     return this.client
       .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
       .then(response => {
+        core.debug(`Response Sucessful: ${response}`)
         return response.data.id
       })
       .catch(error => {
+        core.debug(`Response Failed: ${error}`)
         throw new Error(
           `Error trying to launch the job template: ${error.message}.`
         )
