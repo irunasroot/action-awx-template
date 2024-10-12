@@ -29364,7 +29364,7 @@ class ControllerApi {
     client;
     constructor(controller_url, controller_username, controller_password, controller_token, controller_timeout, controller_verify_certificate) {
         core.debug(`Defaults for ControllerApi. URL: ${controller_url}; Username: ${controller_username ? '***' : ''}; Password: ${controller_password ? '***' : ''}; Token: ${controller_token ? '***' : ''}; Timeout: ${controller_timeout}; Verify Cert: ${controller_verify_certificate}`);
-        if (process.env.ACTIONS_STEP_DEBUG === 'true') {
+        if (process.env.CONTROLLER_DEBUG === 'true') {
             // Enable some addtional debugging if action debugging is turned on.
             // Should only be used in testing environments
             const onFulfilled = (response) => {

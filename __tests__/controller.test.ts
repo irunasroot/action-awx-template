@@ -161,7 +161,7 @@ describe('Testing Controller Initiliaztions', () => {
   })
 
   test('Controller specifiy action debugging', () => {
-    process.env.ACTIONS_STEP_DEBUG = 'true'
+    process.env.CONTROLLER_DEBUG = 'true'
 
     const controller = new ControllerApi(
       CONTROLLER_INSTANCE.controller_url_http,
