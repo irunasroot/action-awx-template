@@ -29383,8 +29383,8 @@ class ControllerApi {
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: controller_token
-                    ? controller_token
-                    : btoa(`(${controller_username}:${controller_password}`)
+                    ? `Bearer ${controller_token}`
+                    : 'Basic ' + btoa(`${controller_username}:${controller_password}`)
             }
         };
         if (this.controller_url.startsWith('https')) {
