@@ -1,6 +1,7 @@
 import * as core from '@actions/core'
 import axios from 'axios'
 import https from 'https'
+import http from 'http'
 
 const TEMPLATE_TYPE_JOBS = 'job_templates'
 const TEMPLATE_TYPE_WORKFLOW_JOBS = 'workflow_job_templates'
@@ -46,7 +47,8 @@ class ControllerApi {
     }
 
     this.controller_url = controller_url
-    this.client = axios.create({
+
+    const axiosOptions: any = {
       baseURL: controller_url,
       timeout: controller_timeout,
       headers: {
@@ -54,11 +56,18 @@ class ControllerApi {
         Authorization: controller_token
           ? controller_token
           : btoa(`(${controller_username}:${controller_password}`)
-      },
-      httpAgent: new https.Agent({
+      }
+    }
+
+    if (this.controller_url.startsWith('https')) {
+      axiosOptions['httpsAgent'] = new https.Agent({
         rejectUnauthorized: controller_verify_certificate
       })
-    })
+    } else {
+      axiosOptions['httpAgent'] = new http.Agent({})
+    }
+
+    this.client = axios.create(axiosOptions)
   }
 
   async _getLaunchRequirements(

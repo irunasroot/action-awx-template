@@ -29354,6 +29354,7 @@ exports.ControllerApi = void 0;
 const core = __importStar(__nccwpck_require__(7484));
 const axios_1 = __importDefault(__nccwpck_require__(7269));
 const https_1 = __importDefault(__nccwpck_require__(5692));
+const http_1 = __importDefault(__nccwpck_require__(8611));
 const TEMPLATE_TYPE_JOBS = 'job_templates';
 const TEMPLATE_TYPE_WORKFLOW_JOBS = 'workflow_job_templates';
 const JOB_TYPE_JOBS = 'jobs';
@@ -29376,7 +29377,7 @@ class ControllerApi {
             throw new Error('No authenication method was provided. Please provide controller_username/controller_password or a controller_token');
         }
         this.controller_url = controller_url;
-        this.client = axios_1.default.create({
+        const axiosOptions = {
             baseURL: controller_url,
             timeout: controller_timeout,
             headers: {
@@ -29384,11 +29385,17 @@ class ControllerApi {
                 Authorization: controller_token
                     ? controller_token
                     : btoa(`(${controller_username}:${controller_password}`)
-            },
-            httpAgent: new https_1.default.Agent({
+            }
+        };
+        if (this.controller_url.startsWith('https')) {
+            axiosOptions['httpsAgent'] = new https_1.default.Agent({
                 rejectUnauthorized: controller_verify_certificate
-            })
-        });
+            });
+        }
+        else {
+            axiosOptions['httpAgent'] = new http_1.default.Agent({});
+        }
+        this.client = axios_1.default.create(axiosOptions);
     }
     async _getLaunchRequirements(template_id, template_type) {
         // endpoint: `/api/v2/${template_type}/${template_id}/launch`

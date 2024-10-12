@@ -1,5 +1,6 @@
 const CONTROLLER_INSTANCE = {
   controller_url: 'https://awx.irunasroot.com',
+  controller_url_http: 'http://awx.irunasroot.com',
   controller_url_with_slash: 'https://awx.irunasroot.com/',
   controller_url_with_path: 'https://awx.irunasroot.com/api/v2/',
   controller_url_invalid_protocol: 'ftp://awx.irunasroot.com/',

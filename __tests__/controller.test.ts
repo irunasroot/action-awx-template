@@ -51,6 +51,19 @@ describe('Testing Controller Initiliaztions', () => {
     }).toThrow(Error)
   })
 
+  test('Controller http protocol', () => {
+    const controller = new ControllerApi(
+      CONTROLLER_INSTANCE.controller_url_http,
+      CONTROLLER_INSTANCE.controller_username,
+      CONTROLLER_INSTANCE.controller_password,
+      CONTROLLER_INSTANCE.controller_token,
+      CONTROLLER_INSTANCE.controller_timeout,
+      CONTROLLER_INSTANCE.controller_verify_certificate
+    )
+
+    expect(controller).toBe(controller)
+  })
+
   test('Controller missing URL', () => {
     expect(() => {
       new ControllerApi(
