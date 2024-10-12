@@ -80,7 +80,7 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${template_type}/${template_id}/launch`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response.data}`)
+        core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         return response.data
       })
       .catch((error: any) => {
@@ -110,7 +110,7 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/${job_type}/${job_id}/`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response.data}`)
+        core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         // Status values: running, successful, failed
         return {
           started: response.data.started,
@@ -144,7 +144,7 @@ class ControllerApi {
         }
       })
       .then(response => {
-        core.debug(`Response Sucessful: ${response.data}`)
+        core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         return response.data
       })
       .catch(error => {
@@ -160,7 +160,7 @@ class ControllerApi {
     return this.client
       .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
       .then(response => {
-        core.debug(`Response Sucessful: ${response.data}`)
+        core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         return response.data.results
       })
       .catch(error => {
@@ -180,7 +180,7 @@ class ControllerApi {
     return this.client
       .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
       .then(response => {
-        core.debug(`Response Sucessful: ${response.data}`)
+        core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         return response.data.id
       })
       .catch(error => {
