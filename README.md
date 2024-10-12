@@ -20,110 +20,139 @@ versions, i.e. execution environment containers.
 - uses: irunasroot/action-awx-template@v1
   with:
     # The URL of AWX/AAP.
-    # If using an insecure SSL certificate be sure to set  controller_verify_certificate to false
-    # Variable Type: global
+    # If using an insecure SSL certificate be sure to set
+    #   controller_verify_certificate to false
+    # Variable Context: global
     controller_url: ''
 
-    # The username to log into the controller. One of username/password or token needs to be provided.
-    # Variable Type: global
+    # The username to log into the controller. One of username/password or
+    #   token needs to be provided.
+    # Variable Context: global
     controller_username: ''
 
-    # The password to log into the controller. One of username/password or token needs to be provided.
-    # Variable Type: global
+    # The password to log into the controller. One of username/password or
+    #   token needs to be provided.
+    # Variable Context: global
     controller_password: ''
 
-    # The token to authenticate to the controller. One of username/password or token needs to be provided.
-    # Variable Type: global
+    # The token to authenticate to the controller. One of username/password or
+    #   token needs to be provided.
+    # Variable Context: global
     controller_token: ''
 
-    # The timeout in milliseconds to wait for a call to the controller before erroring out.
-    # Note this is not a job execution timeout, but rather the timeout of the actual API calls to the controller
+    # The timeout in milliseconds to wait for a call to the controller before
+    #   erroring out.
+    #   Note this is not a job execution timeout, but rather the timeout of
+    #   the actual API calls to the controller
     # Defaults to 1000
-    # Variable Type: global
+    # Variable Context: global
     controller_timeout: ''
 
     # Verify if the controller's certificate is valid.
     # Defaults to true
-    # Variable Type: global
+    # Variable Context: global
     controller_verify_certificate: ''
 
-    # The job template id to execute. This is mutually exclusive with workflow_job_template_id
-    # One of job_template_id or workflow_job_template_id has to be defined in order for the workflow to exeucte
-    # Variable Type: Job Template
+    # The job template id to execute. This is mutually exclusive with
+    #   workflow_job_template_id
+    #   One of job_template_id or workflow_job_template_id has to be
+    #   defined in order for the workflow to exeucte
+    # Variable Context: Job Template
     job_template_id: ''
 
-    # The job template id to execute. This is mutually exclusive with workflow_job_template_id
-    # One of job_template_id or workflow_job_template_id has to be defined in order for the workflow to exeucte
-    # Variable Type: Workflow Job Template
+    # The job template id to execute. This is mutually exclusive with
+    #   workflow_job_template_id
+    #   One of job_template_id or workflow_job_template_id has to be defined
+    #   in order for the workflow to exeucte
+    # Variable Context: Workflow Job Template
     workflow_job_template_id: ''
 
-    # Pass extra command line variables to the playbook. This is the equivalent of using --extra-vars. The extra_vars variable is evaulated using JSON.parse so while its a string it needs to be a strifiy'd version of a JSON object.
-    # Variable Type: Job Template, Workflow Job Template
+    # Pass extra command line variables to the playbook. This is the equivalent
+    #   of using --extra-vars. The extra_vars variable is evaulated using
+    #   JSON.parse so while its a string it needs to be a strifiy'd version of
+    #   a JSON object.
+    # Variable Context: Job Template, Workflow Job Template
     extra_vars: ''
 
     # Select the inventory containing the hosts you want this job to manage.
-    # Variable Type: Job Template, Workflow Job Template
+    # Variable Context: Job Template, Workflow Job Template
     inventory: ''
 
     # Branch to checkout. In addition to branches, you can input tags, commit
-    # Variable Type: Job Template, Workflow Job Template
+    # Variable Context: Job Template, Workflow Job Template
     scm_branch: ''
 
-    # Provide a host pattern to further constrain the list of hosts that will be managed or affected by the playbook.
-    # Variable Type: Job Template, Workflow Job Template
+    # Provide a host pattern to further constrain the list of hosts that will be
+    #   managed or affected by the playbook.
+    # Variable Context: Job Template, Workflow Job Template
     limit: ''
 
-    # Tags are useful when you have a large playbook, and you want to run a specific part of a play or task. Use commas to separate multiple tags.
-    # Variable Type: Job Template, Workflow Job Template
+    # Tags are useful when you have a large playbook, and you want to run a
+    #   specific part of a play or task. Use commas to separate multiple tags.
+    # Variable Context: Job Template, Workflow Job Template
     job_tags: ''
 
-    # Skip tags are useful when you have a large playbook, and you want to skip specific parts of a play or task. Use commas to separate multiple tags.
-    # Variable Type: Job Template, Workflow Job Template
+    # Skip tags are useful when you have a large playbook, and you want to skip
+    #   specific parts of a play or task. Use commas to separate multiple tags.
+    # Variable Context: Job Template, Workflow Job Template
     skip_tags: ''
 
-    # For job templates, select run to execute the playbook. Select check to only check playbook syntax, test environment setup, and report problems without executing the playbook. Can only be one of 'run', or 'check'
+    # For job templates, select run to execute the playbook. Select check to
+    #   only check playbook syntax, test environment setup, and report
+    #   problems without executing the playbook. Can only be one of 'run',
+    #   or 'check'
     # Defaults to 'run'
-    # Variable Type: Job Template
+    # Variable Context: Job Template
     job_type: ''
 
-    # Control the level of output ansible will produce as the playbook executes. Can only be one of 0-5.
-    # Variable Type: Job Template
+    # Control the level of output ansible will produce as the playbook
+    #   executes. Can only be one of 0-5.
+    # Variable Context: Job Template
     verbosity: ''
 
     # If enabled, show the changes made by Ansible tasks, where supported.
-    # Variable Type: Job Template
+    # Variable Context: Job Template
     diff_mode: ''
 
-    # Select credentials for accessing the nodes this job will be ran against. Specify as a list of ID's seperated by commas.
-    # Variable Type: Job Template
+    # Select credentials for accessing the nodes this job will be ran against.
+    #   Specify as a list of ID's seperated by commas.
+    # Variable Context: Job Template
     credentials: ''
 
-    # Credentials Passwords. The credential_passwords variable is evaulated using JSON.parse so while its a string it needs to be a strifiy'd version of a JSON object.
-    # Variable Type: Job Template
+    # Credentials Passwords. The credential_passwords variable is evaulated
+    #   using JSON.parse so while its a string it needs to be a strifiy'd
+    #   version of a JSON object.
+    # Variable Context: Job Template
     credential_passwords: ''
 
-    # The container image to be used for execution. Specify as the ID of the EE.
-    # Variable Type: Job Template
+    # The container image to be used for execution. Specify as the ID
+    #   of the EE.
+    # Variable Context: Job Template
     execution_environment: ''
 
-    # Optional labels that describe this job template, such as 'dev' or 'test'. Specify as a list of ID's seperated by commas.
-    # Variable Type: Job Template
+    # Optional labels that describe this job template, such as 'dev' or 'test'.
+    #   Specify as a list of ID's seperated by commas.
+    # Variable Context: Job Template
     labels: ''
 
-    # The number of parallel or simultaneous processes to use while executing the playbook.
-    # Variable Type: Job Template
+    # The number of parallel or simultaneous processes to use while executing
+    #   the playbook.
+    # Variable Context: Job Template
     forks: ''
 
-    # Divide the work done by this job template into the specified number of job slices, each running the same tasks against a portion of the inventory.
-    # Variable Type: Job Template
+    # Divide the work done by this job template into the specified number of
+    #   job slices, each running the same tasks against a portion of the
+    #   inventory.
+    # Variable Context: Job Template
     job_slice_count: ''
 
     # The amount of time (in seconds) to run before the job is canceled.
-    # Variable Type: Job Template
+    # Variable Context: Job Template
     timeout: ''
 
-    # Select the Instance Groups for this Job Template to run on. Specify as a list of ID's seperated by commas.
-    # Variable Type: Job Template
+    # Select the Instance Groups for this Job Template to run on. Specify as a
+    #   list of ID's seperated by commas.
+    # Variable Context: Job Template
     instance_groups: ''
 ```
 
