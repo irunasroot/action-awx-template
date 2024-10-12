@@ -178,9 +178,9 @@ class ControllerApi {
     core.debug(
       `Launching ${template_type} with payload ${JSON.stringify(payload)}`
     )
-    core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch`)
+    core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch/`)
     return this.client
-      .post(`/api/v2/${template_type}/${template_id}/launch`, payload)
+      .post(`/api/v2/${template_type}/${template_id}/launch/`)
       .then(response => {
         core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`)
         return response.data.id
