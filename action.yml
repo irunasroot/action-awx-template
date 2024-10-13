@@ -80,7 +80,6 @@ inputs:
       without executing the playbook. Can only be one of 'run', or 'check' Type:
       string"
     required: false
-    default: 'run'
   verbosity:
     description:
       'Control the level of output ansible will produce as the playbook
