@@ -75,6 +75,7 @@ class ControllerApi {
     template_type: string
   ): Promise<any> {
     // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+    core.debug(`Getting ${template_type} launch requirements`)
     core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch`)
 
     return this.client
@@ -194,6 +195,7 @@ class ControllerApi {
   }
 
   async launchJobTemplate(template_id: number, payload: any): Promise<number> {
+    core.debug('Launching Job Template')
     return this._launchJobTemplate(template_id, TEMPLATE_TYPE_JOBS, payload)
   }
 
@@ -201,6 +203,7 @@ class ControllerApi {
     template_id: number,
     payload: any
   ): Promise<number> {
+    core.debug('Launching Workflow Job Template')
     return this._launchJobTemplate(
       template_id,
       TEMPLATE_TYPE_WORKFLOW_JOBS,

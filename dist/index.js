@@ -29399,6 +29399,7 @@ class ControllerApi {
     }
     async _getLaunchRequirements(template_id, template_type) {
         // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+        core.debug(`Getting ${template_type} launch requirements`);
         core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch`);
         return this.client
             .get(`/api/v2/${template_type}/${template_id}/launch`)
@@ -29496,9 +29497,11 @@ class ControllerApi {
         });
     }
     async launchJobTemplate(template_id, payload) {
+        core.debug('Launching Job Template');
         return this._launchJobTemplate(template_id, TEMPLATE_TYPE_JOBS, payload);
     }
     async launchWorkflowJobTemplate(template_id, payload) {
+        core.debug('Launching Workflow Job Template');
         return this._launchJobTemplate(template_id, TEMPLATE_TYPE_WORKFLOW_JOBS, payload);
     }
     async sleep(milliseconds) {
@@ -29840,7 +29843,7 @@ class WorkflowJobTemplate extends api_1.ControllerApi {
             skip_tags: this.skip_tags
         };
         Object.keys(payload).forEach(k => payload[k] == null && delete payload[k]);
-        const response = await this.launchJobTemplate(this.template_id, payload);
+        const response = await this.launchWorkflowJobTemplate(this.template_id, payload);
         const jobId = response;
         let wfJobStatus = await this.getWorkflowJobStatus(jobId);
         core.info(`Workflow Job started on: ${wfJobStatus.started}`);
