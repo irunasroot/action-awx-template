@@ -1,6 +1,9 @@
 name: 'Launch AWX/AAP Template'
 description: 'Action for launching an AWX/AAP Job or Workflow Template'
 author: 'Dennis Whitney'
+branding:
+  color: red
+  icon: chevron-right
 
 inputs:
   controller_url:
