@@ -144,7 +144,7 @@ class WorkflowJobTemplate extends ControllerApi {
 
     Object.keys(payload).forEach(k => payload[k] == null && delete payload[k])
 
-    const response = await this.launchJobTemplate(this.template_id, payload)
+    const response = await this.launchWorkflowJobTemplate(this.template_id, payload)
 
     const jobId: number = response
     let wfJobStatus: any = await this.getWorkflowJobStatus(jobId)
