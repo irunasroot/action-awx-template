@@ -7,7 +7,7 @@
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
 Action for launching an AWX/AAP Job Template or Workflow Job template. This
-action is designed to engage fully with the AWX API for validation and sumitting
+action is designed to engage fully with the AWX API for validation and submitting
 the proper variables.
 
 Works with AWX v18 or above, and AAP v2 or above. This _should_ work with older
@@ -56,20 +56,20 @@ versions, i.e. execution environment containers.
     # The job template id to execute. This is mutually exclusive with
     #   workflow_job_template_id
     #   One of job_template_id or workflow_job_template_id has to be
-    #   defined in order for the workflow to exeucte
+    #   defined in order for the workflow to execute
     # Variable Context: Job Template
     job_template_id: ''
 
     # The job template id to execute. This is mutually exclusive with
     #   workflow_job_template_id
     #   One of job_template_id or workflow_job_template_id has to be defined
-    #   in order for the workflow to exeucte
+    #   in order for the workflow to execute
     # Variable Context: Workflow Job Template
     workflow_job_template_id: ''
 
     # Pass extra command line variables to the playbook. This is the equivalent
-    #   of using --extra-vars. The extra_vars variable is evaulated using
-    #   JSON.parse so while its a string it needs to be a strifiy'd version of
+    #   of using --extra-vars. The extra_vars variable is evaluated using
+    #   JSON.parse so while its a string it needs to be a stringify'd version of
     #   a JSON object.
     # Variable Context: Job Template, Workflow Job Template
     extra_vars: ''
@@ -115,12 +115,12 @@ versions, i.e. execution environment containers.
     diff_mode: ''
 
     # Select credentials for accessing the nodes this job will be ran against.
-    #   Specify as a list of ID's seperated by commas.
+    #   Specify as a list of ID's separated by commas.
     # Variable Context: Job Template
     credentials: ''
 
-    # Credentials Passwords. The credential_passwords variable is evaulated
-    #   using JSON.parse so while its a string it needs to be a strifiy'd
+    # Credentials Passwords. The credential_passwords variable is evaluated
+    #   using JSON.parse so while its a string it needs to be a stringify'd
     #   version of a JSON object.
     # Variable Context: Job Template
     credential_passwords: ''
@@ -131,7 +131,7 @@ versions, i.e. execution environment containers.
     execution_environment: ''
 
     # Optional labels that describe this job template, such as 'dev' or 'test'.
-    #   Specify as a list of ID's seperated by commas.
+    #   Specify as a list of ID's separated by commas.
     # Variable Context: Job Template
     labels: ''
 
@@ -151,7 +151,7 @@ versions, i.e. execution environment containers.
     timeout: ''
 
     # Select the Instance Groups for this Job Template to run on. Specify as a
-    #   list of ID's seperated by commas.
+    #   list of ID's separated by commas.
     # Variable Context: Job Template
     instance_groups: ''
 ```

@@ -30,7 +30,7 @@ beforeAll(() => {
   jest.spyOn(JobTemplate.prototype, 'sleep').mockImplementation()
 })
 
-describe('Testing Job Template Initiliaztions', () => {
+describe('Testing Job Template Initializations', () => {
   test('Job Template invalid ID', () => {
     expect(() => {
       new JobTemplate(

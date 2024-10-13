@@ -37,7 +37,7 @@ const mockCore = core as jest.Mocked<typeof core>
 mockAxios.create.mockImplementation(() => axios)
 mockCore.debug.mockImplementation()
 
-describe('Testing Controller Initiliaztions', () => {
+describe('Testing Controller Initializations', () => {
   test('Controller invalid URL protocol', () => {
     expect(() => {
       new ControllerApi(
@@ -119,7 +119,7 @@ describe('Testing Controller Initiliaztions', () => {
     }).toThrow(Error)
   })
 
-  test('Controller specifiy username/password', () => {
+  test('Controller specify username/password', () => {
     const controller = new ControllerApi(
       CONTROLLER_INSTANCE.controller_url_with_slash,
       CONTROLLER_INSTANCE.controller_username,
@@ -134,7 +134,7 @@ describe('Testing Controller Initiliaztions', () => {
     expect(controller).toBe(controller)
   })
 
-  test('Controller specifiy token', () => {
+  test('Controller specify token', () => {
     const controller = new ControllerApi(
       CONTROLLER_INSTANCE.controller_url_with_slash,
       '',

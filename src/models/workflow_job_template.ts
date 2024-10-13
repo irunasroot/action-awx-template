@@ -88,7 +88,7 @@ class WorkflowJobTemplate extends ControllerApi {
 
     if (missing.length > 0) {
       throw new Error(
-        `The following required paramaters are missing: ${missing.join(', ')}.`
+        `The following required parameters are missing: ${missing.join(', ')}.`
       )
     }
 

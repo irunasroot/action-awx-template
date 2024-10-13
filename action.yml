@@ -93,7 +93,7 @@ inputs:
   credentials:
     description:
       "Select credentials for accessing the nodes this job will be ran against.
-      Specify as a list of ID's seperated by commas. Type: string"
+      Specify as a list of ID's separated by commas. Type: string"
     required: false
   credential_passwords:
     description: 'Credentials Passwords. Type: string[json]'
@@ -106,7 +106,7 @@ inputs:
   labels:
     description:
       "Optional labels that describe this job template, such as 'dev' or 'test'.
-      Specify as a list of ID's seperated by commas. Type: string"
+      Specify as a list of ID's separated by commas. Type: string"
     required: false
   forks:
     description:
@@ -127,7 +127,7 @@ inputs:
   instance_groups:
     description:
       "Select the Instance Groups for this Job Template to run on. Specify as a
-      list of ID's seperated by commas. Type: string"
+      list of ID's separated by commas. Type: string"
     required: false
 
 runs:

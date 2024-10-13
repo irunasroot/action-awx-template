@@ -173,7 +173,7 @@ describe('Test main run function', () => {
         data: NODE_ONE_JOB_STATUS_DATA
       })
       .mockResolvedValueOnce({
-        // Fith call to get job status of node one
+        // Fifth call to get job status of node one
         data: NODE_TWO_JOB_STATUS_DATA
       })
       .mockResolvedValueOnce({

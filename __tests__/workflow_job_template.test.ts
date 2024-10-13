@@ -36,7 +36,7 @@ beforeAll(() => {
   jest.spyOn(WorkflowJobTemplate.prototype, 'sleep').mockImplementation()
 })
 
-describe('Testing Workflow Job Template Initiliaztions', () => {
+describe('Testing Workflow Job Template Initializations', () => {
   test('Workflow Job Template invalid ID', () => {
     expect(() => {
       new WorkflowJobTemplate(
@@ -385,7 +385,7 @@ describe('Workflow Job Template run function', () => {
         data: JOB_OUTPUT_DATA_ANSI
       })
       .mockResolvedValueOnce({
-        // Twelveth call to get job output (second workflow node)
+        // Twelfth call to get job output (second workflow node)
         data: JOB_OUTPUT_DATA_ANSI
       })
       .mockResolvedValueOnce({
