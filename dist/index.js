@@ -29831,14 +29831,16 @@ class WorkflowJobTemplate extends api_1.ControllerApi {
     }
     async run() {
         this.validateLaunchRequirements(await this.getWorkflowJobTemplateLaunchRequirements(this.template_id));
-        const response = await this.launchJobTemplate(this.template_id, {
+        const payload = {
             extra_vars: this.extra_vars,
             inventory: this.inventory,
             scm_branch: this.scm_branch,
             limit: this.limit,
             job_tags: this.job_tags,
             skip_tags: this.skip_tags
-        });
+        };
+        Object.keys(payload).forEach(k => payload[k] == null && delete payload[k]);
+        const response = await this.launchJobTemplate(this.template_id, payload);
         const jobId = response;
         let wfJobStatus = await this.getWorkflowJobStatus(jobId);
         core.info(`Workflow Job started on: ${wfJobStatus.started}`);

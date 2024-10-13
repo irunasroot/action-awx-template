@@ -133,14 +133,18 @@ class WorkflowJobTemplate extends ControllerApi {
       await this.getWorkflowJobTemplateLaunchRequirements(this.template_id)
     )
 
-    const response = await this.launchJobTemplate(this.template_id, {
+    const payload: any = {
       extra_vars: this.extra_vars,
       inventory: this.inventory,
       scm_branch: this.scm_branch,
       limit: this.limit,
       job_tags: this.job_tags,
       skip_tags: this.skip_tags
-    })
+    }
+
+    Object.keys(payload).forEach(k => payload[k] == null && delete payload[k])
+
+    const response = await this.launchJobTemplate(this.template_id, payload)
 
     const jobId: number = response
     let wfJobStatus: any = await this.getWorkflowJobStatus(jobId)
