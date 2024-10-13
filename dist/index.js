@@ -29374,7 +29374,7 @@ class ControllerApi {
             throw new Error('The controller_url does not start with http:// or https://');
         }
         if (!((controller_username && controller_password) || controller_token)) {
-            throw new Error('No authenication method was provided. Please provide controller_username/controller_password or a controller_token');
+            throw new Error('No authentication method was provided. Please provide controller_username/controller_password or a controller_token');
         }
         this.controller_url = controller_url;
         const axiosOptions = {
@@ -29404,7 +29404,7 @@ class ControllerApi {
         return this.client
             .get(`/api/v2/${template_type}/${template_id}/launch`)
             .then(response => {
-            core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`);
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data;
         })
             .catch((error) => {
@@ -29427,7 +29427,7 @@ class ControllerApi {
         return this.client
             .get(`/api/v2/${job_type}/${job_id}/`)
             .then(response => {
-            core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`);
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             // Status values: running, successful, failed
             return {
                 started: response.data.started,
@@ -29458,7 +29458,7 @@ class ControllerApi {
             }
         })
             .then(response => {
-            core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`);
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data;
         })
             .catch(error => {
@@ -29473,7 +29473,7 @@ class ControllerApi {
         return this.client
             .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
             .then(response => {
-            core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`);
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data.results;
         })
             .catch(error => {
@@ -29488,7 +29488,7 @@ class ControllerApi {
         return this.client
             .post(`/api/v2/${template_type}/${template_id}/launch/`)
             .then(response => {
-            core.debug(`Response Sucessful: ${JSON.stringify(response.data)}`);
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data.id;
         })
             .catch(error => {
@@ -29639,7 +29639,7 @@ class JobTemplate extends api_1.ControllerApi {
             }
         }
         if (missing.length > 0) {
-            throw new Error(`The following required paramaters are missing: ${missing.join(', ')}.`);
+            throw new Error(`The following required parameters are missing: ${missing.join(', ')}.`);
         }
         if (launchRequirements.survey_enabled &&
             launchRequirements.variables_needed_to_start.length > 0) {
@@ -29810,7 +29810,7 @@ class WorkflowJobTemplate extends api_1.ControllerApi {
             }
         }
         if (missing.length > 0) {
-            throw new Error(`The following required paramaters are missing: ${missing.join(', ')}.`);
+            throw new Error(`The following required parameters are missing: ${missing.join(', ')}.`);
         }
         if (launchRequirements.survey_enabled &&
             launchRequirements.variables_needed_to_start.length > 0) {

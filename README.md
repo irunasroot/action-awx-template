@@ -7,8 +7,8 @@
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
 Action for launching an AWX/AAP Job Template or Workflow Job template. This
-action is designed to engage fully with the AWX API for validation and submitting
-the proper variables.
+action is designed to engage fully with the AWX API for validation and
+submitting the proper variables.
 
 Works with AWX v18 or above, and AAP v2 or above. This _should_ work with older
 versions of AWX but not guaranteed as some variables are different in order
