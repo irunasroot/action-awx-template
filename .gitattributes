@@ -1,4 +1,4 @@
 * text=auto eol=lf
 
 dist/** -diff linguist-generated=true
-dist/license.txt -diff
+dist/licenses.txt -diff
