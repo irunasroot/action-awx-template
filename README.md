@@ -1,4 +1,4 @@
-# Create a GitHub Action Using TypeScript
+# Action for launching an AWX/AAP Job or Workflow Template
 
 [![GitHub Super-Linter](https://github.com/irunasroot/action-awx-template/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
 ![CI](https://github.com/irunasroot/action-awx-template/actions/workflows/ci.yml/badge.svg)
@@ -162,11 +162,6 @@ versions, i.e. execution environment containers.
 
 ```yaml
 steps:
-  - name: Checkout
-    uses: actions/checkout@v4
-    with:
-      ref: main
-
   - name: Launch Super Template 10
     uses: irunasroot/action-awx-template@v1
     with:
