@@ -76,7 +76,7 @@ class ControllerApi {
   ): Promise<any> {
     // endpoint: `/api/v2/${template_type}/${template_id}/launch`
     core.debug(`Getting ${template_type} launch requirements`)
-    core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch`)
+    core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch/`)
 
     return this.client
       .get(`/api/v2/${template_type}/${template_id}/launch`)
@@ -181,7 +181,7 @@ class ControllerApi {
     )
     core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch/`)
     return this.client
-      .post(`/api/v2/${template_type}/${template_id}/launch/`)
+      .post(`/api/v2/${template_type}/${template_id}/launch/`, payload)
       .then(response => {
         core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
         return response.data.id
