@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { ControllerApi } from './api'
+import { ControllerApi } from './api.js'
 
 const LAUNCH_REQUIREMENTS_MAPPING: any = {
   ask_inventory_on_launch: 'inventory',

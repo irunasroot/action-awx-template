@@ -1,4 +1,4 @@
-import { JobTemplate } from './job_template'
-import { WorkflowJobTemplate } from './workflow_job_template'
+import { JobTemplate } from './job_template.js'
+import { WorkflowJobTemplate } from './workflow_job_template.js'
 
 export { JobTemplate, WorkflowJobTemplate }

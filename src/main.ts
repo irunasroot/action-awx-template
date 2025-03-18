@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { JobTemplate, WorkflowJobTemplate } from './models/index'
+import { JobTemplate, WorkflowJobTemplate } from './models/index.js'
 
 function templateConstructor(params: any): JobTemplate | WorkflowJobTemplate {
   if (params.job_template_id && !params.workflow_job_template_id) {

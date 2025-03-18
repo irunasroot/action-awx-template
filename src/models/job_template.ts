@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { ControllerApi } from './api'
+import { ControllerApi } from './api.js'
 
 const LAUNCH_REQUIREMENTS_MAPPING: any[string] = {
   ask_scm_branch_on_launch: 'scm_branch',
