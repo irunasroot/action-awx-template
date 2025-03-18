@@ -15039,6 +15039,14 @@ const { isUint8Array, isArrayBuffer } = __nccwpck_require__(8253)
 const { File: UndiciFile } = __nccwpck_require__(3041)
 const { parseMIMEType, serializeAMimeType } = __nccwpck_require__(4322)
 
+let random
+try {
+  const crypto = __nccwpck_require__(7598)
+  random = (max) => crypto.randomInt(0, max)
+} catch {
+  random = (max) => Math.floor(Math.random(max))
+}
+
 let ReadableStream = globalThis.ReadableStream
 
 /** @type {globalThis['File']} */
@@ -15124,7 +15132,7 @@ function extractBody (object, keepalive = false) {
     // Set source to a copy of the bytes held by object.
     source = new Uint8Array(object.buffer.slice(object.byteOffset, object.byteOffset + object.byteLength))
   } else if (util.isFormDataLike(object)) {
-    const boundary = `----formdata-undici-0${`${Math.floor(Math.random() * 1e11)}`.padStart(11, '0')}`
+    const boundary = `----formdata-undici-0${`${random(1e11)}`.padStart(11, '0')}`
     const prefix = `--${boundary}\r\nContent-Disposition: form-data`
 
     /*! formdata-polyfill. MIT License. Jimmy Wärting <https://jimmy.warting.se/opensource> */
@@ -29382,6 +29390,7 @@ const JOB_TYPE_WORKFLOW_JOBS = 'workflow_jobs';
 class ControllerApi {
     controller_url;
     client;
+    baseApi;
     constructor(controller_url, controller_username, controller_password, controller_token, controller_timeout, controller_verify_certificate) {
         core.debug(`Defaults for ControllerApi. URL: ${controller_url}; Username: ${controller_username ? '***' : ''}; Password: ${controller_password ? '***' : ''}; Token: ${controller_token ? '***' : ''}; Timeout: ${controller_timeout}; Verify Cert: ${controller_verify_certificate}`);
         if (!controller_url) {
@@ -29397,6 +29406,7 @@ class ControllerApi {
             throw new Error('No authentication method was provided. Please provide controller_username/controller_password or a controller_token');
         }
         this.controller_url = controller_url;
+        this.baseApi = '';
         const axiosOptions = {
             baseURL: controller_url,
             timeout: controller_timeout,
@@ -29417,12 +29427,33 @@ class ControllerApi {
         }
         this.client = axios_1.default.create(axiosOptions);
     }
-    async _getLaunchRequirements(template_id, template_type) {
-        // endpoint: `/api/v2/${template_type}/${template_id}/launch`
-        core.debug(`Getting ${template_type} launch requirements`);
-        core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch/`);
+    async init() {
+        this.baseApi = await this.getBaseApi();
+    }
+    async getBaseApi() {
+        core.debug('Determining the base API endpoint');
         return this.client
-            .get(`/api/v2/${template_type}/${template_id}/launch`)
+            .get(`/api/`)
+            .then(response => {
+            core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
+            switch (response.headers['x-api-product-name'] ?? '') {
+                case 'AAP gateway':
+                    return '/api/controller/v2';
+                default:
+                    return '/api/v2';
+            }
+        })
+            .catch((error) => {
+            core.debug(`Response Failed: ${error.message}`);
+            throw new Error(`Error trying to get base API endpoint: ${error.message}.`);
+        });
+    }
+    async _getLaunchRequirements(template_id, template_type) {
+        // endpoint: `${this.baseApi}/${template_type}/${template_id}/launch`
+        core.debug(`Getting ${template_type} launch requirements`);
+        core.debug(`API endpoint: ${this.baseApi}/${template_type}/${template_id}/launch/`);
+        return this.client
+            .get(`${this.baseApi}/${template_type}/${template_id}/launch`)
             .then(response => {
             core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data;
@@ -29441,11 +29472,11 @@ class ControllerApi {
         return this._getLaunchRequirements(template_id, TEMPLATE_TYPE_WORKFLOW_JOBS);
     }
     async _getRunningJobStatus(job_id, job_type) {
-        // endpoint: `/api/v2/${job_type}/${job_id}/`
+        // endpoint: `${this.baseApi}/${job_type}/${job_id}/`
         core.debug(`Getting ${job_type} status`);
-        core.debug(`API Endpoint: /api/v2/${job_type}/${job_id}/`);
+        core.debug(`API Endpoint: ${this.baseApi}/${job_type}/${job_id}/`);
         return this.client
-            .get(`/api/v2/${job_type}/${job_id}/`)
+            .get(`${this.baseApi}/${job_type}/${job_id}/`)
             .then(response => {
             core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             // Status values: running, successful, failed
@@ -29468,11 +29499,11 @@ class ControllerApi {
         return this._getRunningJobStatus(job_id, JOB_TYPE_WORKFLOW_JOBS);
     }
     async getJobOutput(job_id, format = 'ansi') {
-        // endpoint: `/api/v2/jobs/${job_id}/stdout/`
+        // endpoint: `${this.baseApi}/jobs/${job_id}/stdout/`
         core.debug('Getting Job Template output');
-        core.debug(`API Endpoint: /api/v2/jobs/${job_id}/stdout/`);
+        core.debug(`API Endpoint: ${this.baseApi}/jobs/${job_id}/stdout/`);
         return this.client
-            .get(`/api/v2/jobs/${job_id}/stdout/`, {
+            .get(`${this.baseApi}/jobs/${job_id}/stdout/`, {
             params: {
                 format: format
             }
@@ -29487,11 +29518,11 @@ class ControllerApi {
         });
     }
     async getWorkflowNodes(job_id) {
-        // endpoint: `/api/v2/workflow_jobs/${job_id}/workflow_nodes/`
+        // endpoint: `${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`
         core.debug('Getting Workflow Job nodes');
-        core.debug(`API Endpoint: /api/v2/workflow_jobs/${job_id}/workflow_nodes/`);
+        core.debug(`API Endpoint: ${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`);
         return this.client
-            .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
+            .get(`${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`)
             .then(response => {
             core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data.results;
@@ -29502,11 +29533,11 @@ class ControllerApi {
         });
     }
     async _launchJobTemplate(template_id, template_type, payload) {
-        // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+        // endpoint: `${this.baseApi}/${template_type}/${template_id}/launch`
         core.debug(`Launching ${template_type} with payload ${JSON.stringify(payload)}`);
-        core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch/`);
+        core.debug(`API Endpoint: ${this.baseApi}/${template_type}/${template_id}/launch/`);
         return this.client
-            .post(`/api/v2/${template_type}/${template_id}/launch/`, payload)
+            .post(`${this.baseApi}/${template_type}/${template_id}/launch/`, payload)
             .then(response => {
             core.debug(`Response Successful: ${JSON.stringify(response.data)}`);
             return response.data.id;
@@ -29707,6 +29738,7 @@ class JobTemplate extends api_1.ControllerApi {
         }
     }
     async run() {
+        await this.init();
         this.validateLaunchRequirements(await this.getJobTemplateLaunchRequirements(this.template_id));
         const payload = {
             extra_vars: this.extra_vars,
@@ -29873,6 +29905,7 @@ class WorkflowJobTemplate extends api_1.ControllerApi {
         }
     }
     async run() {
+        await this.init();
         this.validateLaunchRequirements(await this.getWorkflowJobTemplateLaunchRequirements(this.template_id));
         const payload = {
             extra_vars: this.extra_vars,
@@ -30022,6 +30055,14 @@ module.exports = require("https");
 
 "use strict";
 module.exports = require("net");
+
+/***/ }),
+
+/***/ 7598:
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("node:crypto");
 
 /***/ }),
 
@@ -31798,10 +31839,11 @@ module.exports = parseParams
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
-// Axios v1.7.8 Copyright (c) 2024 Matt Zabriskie and contributors
+/*! Axios v1.8.3 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 
 const FormData$1 = __nccwpck_require__(6454);
+const crypto = __nccwpck_require__(6982);
 const url = __nccwpck_require__(7016);
 const proxyFromEnv = __nccwpck_require__(7777);
 const http = __nccwpck_require__(8611);
@@ -31815,6 +31857,7 @@ const events = __nccwpck_require__(4434);
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
 const FormData__default = /*#__PURE__*/_interopDefaultLegacy(FormData$1);
+const crypto__default = /*#__PURE__*/_interopDefaultLegacy(crypto);
 const url__default = /*#__PURE__*/_interopDefaultLegacy(url);
 const proxyFromEnv__default = /*#__PURE__*/_interopDefaultLegacy(proxyFromEnv);
 const http__default = /*#__PURE__*/_interopDefaultLegacy(http);
@@ -32430,26 +32473,6 @@ const toFiniteNumber = (value, defaultValue) => {
   return value != null && Number.isFinite(value = +value) ? value : defaultValue;
 };
 
-const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
-
-const DIGIT = '0123456789';
-
-const ALPHABET = {
-  DIGIT,
-  ALPHA,
-  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
-};
-
-const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
-  let str = '';
-  const {length} = alphabet;
-  while (size--) {
-    str += alphabet[Math.random() * length|0];
-  }
-
-  return str;
-};
-
 /**
  * If the thing is a FormData object, return true, otherwise return false.
  *
@@ -32577,8 +32600,6 @@ const utils$1 = {
   findKey,
   global: _global,
   isContextDefined,
-  ALPHABET,
-  generateString,
   isSpecCompliantForm,
   toJSONObject,
   isAsyncFn,
@@ -33090,6 +33111,29 @@ const transitionalDefaults = {
 
 const URLSearchParams = url__default["default"].URLSearchParams;
 
+const ALPHA = 'abcdefghijklmnopqrstuvwxyz';
+
+const DIGIT = '0123456789';
+
+const ALPHABET = {
+  DIGIT,
+  ALPHA,
+  ALPHA_DIGIT: ALPHA + ALPHA.toUpperCase() + DIGIT
+};
+
+const generateString = (size = 16, alphabet = ALPHABET.ALPHA_DIGIT) => {
+  let str = '';
+  const {length} = alphabet;
+  const randomValues = new Uint32Array(size);
+  crypto__default["default"].randomFillSync(randomValues);
+  for (let i = 0; i < size; i++) {
+    str += alphabet[randomValues[i] % length];
+  }
+
+  return str;
+};
+
+
 const platform$1 = {
   isNode: true,
   classes: {
@@ -33097,6 +33141,8 @@ const platform$1 = {
     FormData: FormData__default["default"],
     Blob: typeof Blob !== 'undefined' && Blob || null
   },
+  ALPHABET,
+  generateString,
   protocols: [ 'http', 'https', 'file', 'data' ]
 };
 
@@ -33871,14 +33917,15 @@ function combineURLs(baseURL, relativeURL) {
  *
  * @returns {string} The combined full path
  */
-function buildFullPath(baseURL, requestedURL) {
-  if (baseURL && !isAbsoluteURL(requestedURL)) {
+function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls) {
+  let isRelativeUrl = !isAbsoluteURL(requestedURL);
+  if (baseURL && isRelativeUrl || allowAbsoluteUrls == false) {
     return combineURLs(baseURL, requestedURL);
   }
   return requestedURL;
 }
 
-const VERSION = "1.7.8";
+const VERSION = "1.8.3";
 
 function parseProtocol(url) {
   const match = /^([-+\w]{1,25})(:?\/\/|:)/.exec(url);
@@ -34088,7 +34135,7 @@ const readBlob = async function* (blob) {
 
 const readBlob$1 = readBlob;
 
-const BOUNDARY_ALPHABET = utils$1.ALPHABET.ALPHA_DIGIT + '-_';
+const BOUNDARY_ALPHABET = platform.ALPHABET.ALPHA_DIGIT + '-_';
 
 const textEncoder = typeof TextEncoder === 'function' ? new TextEncoder() : new util__default["default"].TextEncoder();
 
@@ -34148,7 +34195,7 @@ const formDataToStream = (form, headersHandler, options) => {
   const {
     tag = 'form-data-boundary',
     size = 25,
-    boundary = tag + '-' + utils$1.generateString(size, BOUNDARY_ALPHABET)
+    boundary = tag + '-' + platform.generateString(size, BOUNDARY_ALPHABET)
   } = options || {};
 
   if(!utils$1.isFormData(form)) {
@@ -34573,7 +34620,7 @@ const httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
     }
 
     // Parse url
-    const fullPath = buildFullPath(config.baseURL, config.url);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
     const parsed = new URL(fullPath, platform.hasBrowserEnv ? platform.origin : undefined);
     const protocol = parsed.protocol || supportedProtocols[0];
 
@@ -35196,7 +35243,7 @@ const resolveConfig = (config) => {
 
   newConfig.headers = headers = AxiosHeaders$1.from(headers);
 
-  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url), config.params, config.paramsSerializer);
+  newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url, newConfig.allowAbsoluteUrls), config.params, config.paramsSerializer);
 
   // HTTP basic authentication
   if (auth) {
@@ -36104,6 +36151,13 @@ class Axios {
       }
     }
 
+    // Set config.allowAbsoluteUrls
+    if (config.allowAbsoluteUrls !== undefined) ; else if (this.defaults.allowAbsoluteUrls !== undefined) {
+      config.allowAbsoluteUrls = this.defaults.allowAbsoluteUrls;
+    } else {
+      config.allowAbsoluteUrls = true;
+    }
+
     validator.assertOptions(config, {
       baseUrl: validators.spelling('baseURL'),
       withXsrfToken: validators.spelling('withXSRFToken')
@@ -36199,7 +36253,7 @@ class Axios {
 
   getUri(config) {
     config = mergeConfig(this.defaults, config);
-    const fullPath = buildFullPath(config.baseURL, config.url);
+    const fullPath = buildFullPath(config.baseURL, config.url, config.allowAbsoluteUrls);
     return buildURL(fullPath, config.params, config.paramsSerializer);
   }
 }

@@ -12,6 +12,7 @@ const JOB_TYPE_WORKFLOW_JOBS = 'workflow_jobs'
 class ControllerApi {
   controller_url: string
   client: axios.AxiosInstance
+  baseApi: string
 
   constructor(
     controller_url: string,
@@ -47,6 +48,7 @@ class ControllerApi {
     }
 
     this.controller_url = controller_url
+    this.baseApi = ''
 
     const axiosOptions: any = {
       baseURL: controller_url,
@@ -70,16 +72,44 @@ class ControllerApi {
     this.client = axios.create(axiosOptions)
   }
 
+  async init(): Promise<void> {
+    this.baseApi = await this.getBaseApi()
+  }
+
+  async getBaseApi(): Promise<string> {
+    core.debug('Determining the base API endpoint')
+
+    return this.client
+      .get(`/api/`)
+      .then(response => {
+        core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
+        switch (response.headers['x-api-product-name'] ?? '') {
+          case 'AAP gateway':
+            return '/api/controller/v2'
+          default:
+            return '/api/v2'
+        }
+      })
+      .catch((error: any) => {
+        core.debug(`Response Failed: ${error.message}`)
+        throw new Error(
+          `Error trying to get base API endpoint: ${error.message}.`
+        )
+      })
+  }
+
   async _getLaunchRequirements(
     template_id: number,
     template_type: string
   ): Promise<any> {
-    // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+    // endpoint: `${this.baseApi}/${template_type}/${template_id}/launch`
     core.debug(`Getting ${template_type} launch requirements`)
-    core.debug(`API endpoint: /api/v2/${template_type}/${template_id}/launch/`)
+    core.debug(
+      `API endpoint: ${this.baseApi}/${template_type}/${template_id}/launch/`
+    )
 
     return this.client
-      .get(`/api/v2/${template_type}/${template_id}/launch`)
+      .get(`${this.baseApi}/${template_type}/${template_id}/launch`)
       .then(response => {
         core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
         return response.data
@@ -105,11 +135,11 @@ class ControllerApi {
   }
 
   async _getRunningJobStatus(job_id: number, job_type: string): Promise<any> {
-    // endpoint: `/api/v2/${job_type}/${job_id}/`
+    // endpoint: `${this.baseApi}/${job_type}/${job_id}/`
     core.debug(`Getting ${job_type} status`)
-    core.debug(`API Endpoint: /api/v2/${job_type}/${job_id}/`)
+    core.debug(`API Endpoint: ${this.baseApi}/${job_type}/${job_id}/`)
     return this.client
-      .get(`/api/v2/${job_type}/${job_id}/`)
+      .get(`${this.baseApi}/${job_type}/${job_id}/`)
       .then(response => {
         core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
         // Status values: running, successful, failed
@@ -135,11 +165,11 @@ class ControllerApi {
   }
 
   async getJobOutput(job_id: number, format = 'ansi'): Promise<any> {
-    // endpoint: `/api/v2/jobs/${job_id}/stdout/`
+    // endpoint: `${this.baseApi}/jobs/${job_id}/stdout/`
     core.debug('Getting Job Template output')
-    core.debug(`API Endpoint: /api/v2/jobs/${job_id}/stdout/`)
+    core.debug(`API Endpoint: ${this.baseApi}/jobs/${job_id}/stdout/`)
     return this.client
-      .get(`/api/v2/jobs/${job_id}/stdout/`, {
+      .get(`${this.baseApi}/jobs/${job_id}/stdout/`, {
         params: {
           format: format
         }
@@ -155,11 +185,13 @@ class ControllerApi {
   }
 
   async getWorkflowNodes(job_id: number): Promise<any> {
-    // endpoint: `/api/v2/workflow_jobs/${job_id}/workflow_nodes/`
+    // endpoint: `${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`
     core.debug('Getting Workflow Job nodes')
-    core.debug(`API Endpoint: /api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
+    core.debug(
+      `API Endpoint: ${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`
+    )
     return this.client
-      .get(`/api/v2/workflow_jobs/${job_id}/workflow_nodes/`)
+      .get(`${this.baseApi}/workflow_jobs/${job_id}/workflow_nodes/`)
       .then(response => {
         core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
         return response.data.results
@@ -175,13 +207,15 @@ class ControllerApi {
     template_type: string,
     payload: any
   ): Promise<any> {
-    // endpoint: `/api/v2/${template_type}/${template_id}/launch`
+    // endpoint: `${this.baseApi}/${template_type}/${template_id}/launch`
     core.debug(
       `Launching ${template_type} with payload ${JSON.stringify(payload)}`
     )
-    core.debug(`API Endpoint: /api/v2/${template_type}/${template_id}/launch/`)
+    core.debug(
+      `API Endpoint: ${this.baseApi}/${template_type}/${template_id}/launch/`
+    )
     return this.client
-      .post(`/api/v2/${template_type}/${template_id}/launch/`, payload)
+      .post(`${this.baseApi}/${template_type}/${template_id}/launch/`, payload)
       .then(response => {
         core.debug(`Response Successful: ${JSON.stringify(response.data)}`)
         return response.data.id
