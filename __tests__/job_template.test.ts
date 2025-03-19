@@ -554,6 +554,12 @@ describe('Job Template run function', () => {
     JOB_STATUS_DATA_RUNNING.finished = null
 
     mockAxios.get.mockResolvedValueOnce({
+      // Initialization call
+      headers: {
+        'x-api-product-name': 'AAP gateway'
+      }
+    })
+    mockAxios.get.mockResolvedValueOnce({
       // First call to get job requirements
       data: JOB_TEMPLATE_REQUIREMENTS
     })
@@ -594,6 +600,10 @@ describe('Job Template run function', () => {
     JOB_STATUS_DATA_FAILED.status = 'failed'
 
     mockAxios.get.mockResolvedValueOnce({
+      // Initialization call
+      headers: {}
+    })
+    mockAxios.get.mockResolvedValueOnce({
       // First call to get job requirements
       data: JOB_TEMPLATE_REQUIREMENTS
     })
@@ -614,5 +624,35 @@ describe('Job Template run function', () => {
     await template.run()
 
     expect(core.setFailed).toHaveBeenCalledTimes(1)
+  })
+
+  test('Base API Endpoint should be /api/v2', async () => {
+    const template = new JobTemplate(...JOB_TEMPLATE_INPUT_DATA_ARRAY)
+
+    mockAxios.get.mockResolvedValueOnce({
+      // Initialization call
+      headers: {
+        'x-api-product-name': 'AWX'
+      }
+    })
+
+    template.baseApi = await template.getBaseApi()
+
+    expect(template.baseApi).toEqual('/api/v2')
+  })
+
+  test('Base API Endpoint should be /api/controller/v2', async () => {
+    const template = new JobTemplate(...JOB_TEMPLATE_INPUT_DATA_ARRAY)
+
+    mockAxios.get.mockResolvedValueOnce({
+      // Initialization call
+      headers: {
+        'x-api-product-name': 'AAP gateway'
+      }
+    })
+
+    template.baseApi = await template.getBaseApi()
+
+    expect(template.baseApi).toEqual('/api/controller/v2')
   })
 })

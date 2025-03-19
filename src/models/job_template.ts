@@ -197,6 +197,8 @@ class JobTemplate extends ControllerApi {
   }
 
   async run(): Promise<void> {
+    await this.init()
+
     this.validateLaunchRequirements(
       await this.getJobTemplateLaunchRequirements(this.template_id)
     )

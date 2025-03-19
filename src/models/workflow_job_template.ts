@@ -129,6 +129,8 @@ class WorkflowJobTemplate extends ControllerApi {
   }
 
   async run(): Promise<void> {
+    await this.init()
+
     this.validateLaunchRequirements(
       await this.getWorkflowJobTemplateLaunchRequirements(this.template_id)
     )
