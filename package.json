@@ -1,7 +1,7 @@
 {
   "name": "action-awx-template",
   "description": "Action for launching an AWX/AAP Job or Workflow Template",
-  "version": "v1.1.0",
+  "version": "v1.1.1",
   "author": "Dennis Whitney",
   "private": true,
   "homepage": "https://github.com/irunasroot/action-awx-template",
